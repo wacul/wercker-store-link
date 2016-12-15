@@ -1,0 +1,12 @@
+name: store-link
+version: 1.0.0
+description: Store and restore symbolic links for Wercker workflow across multiple pipelines.
+keywords:
+  - symbolic link
+properties:
+  type:
+    type: string
+    required: true
+  prefix:
+    type: string
+    required: false

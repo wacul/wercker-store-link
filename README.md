@@ -1,16 +1,6 @@
 # wercker-store-link
 
-Stores and restores sym-links. It's useful for users of NPM commands in `node_modules/.bin` across multiple Wercker's workflows.
-
-## Install 
-Copy the `store-link` file from this repository to your repository.
-
-## Usage
-
-```sh
-usage store-link -r [prefix]
-      store-link -s [prefix]
-```
+This is a Wercker step to store and restore all symbolic links in the specified directory. It's useful for users of NPM commands in `node_modules/.bin` across multiple Wercker's pipelines.
 
 ## wercker.yaml example
 
@@ -23,16 +13,16 @@ test:
     - script:
       name: your_task
       code: echo "exec some NPM tasks..."
-    - script:
-      name: store_sym_links_in_node_modules
-      code: /bin/bash store-link -s
+    - wacul/store-link:
+      - type: store
+      - prefix: node_modules/.bin
 
 deploy:
   steps:
-    - script:
-      name: restore_sym_links_in_node_modules
-      code: /bin/bash store-link -r
+    - wacul/store-link:
+      - type: restore
+      - prefix: node_modules/.bin
     - script:
       name: your_task
-      code: echo "exec some NPM tasks..."
+      code: npm run build
 ```
