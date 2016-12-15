@@ -10,19 +10,22 @@ box: node:6.5
 test:
   steps:
     - npm-install
+
     - script:
       name: your_task
-      code: echo "exec some NPM tasks..."
+      code: echo "exec some tasks..."
+
     - wacul/store-link:
-      - type: store
-      - prefix: node_modules/.bin
+      type: store
+      prefix: node_modules/.bin
 
 deploy:
   steps:
     - wacul/store-link:
-      - type: restore
-      - prefix: node_modules/.bin
+      type: restore
+      prefix: node_modules/.bin
+
     - script:
-      name: your_task
+      name: your_npm_task
       code: npm run build
 ```
