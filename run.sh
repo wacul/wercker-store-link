@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/bin/sh
+
+error() {
+  echo $1 >&2
+  exit 1
+}
 
 PREFIX=.
 if [ -n "${WERCKER_STORE_LINK_PREFIX}" ]; then
@@ -6,9 +11,11 @@ if [ -n "${WERCKER_STORE_LINK_PREFIX}" ]; then
 fi
 
 if [ "${WERCKER_STORE_LINK_TYPE}" = "store" ]; then
-  /bin/sh ./store-link -s ${PREFIX}
+  MODE=-s
+elif [ "${WERCKER_STORE_LINK_TYPE}" = "restore" ]; then
+  MODE=-r
+else
+  error "type should be 'store' or 'restore'"
 fi
 
-if [ "${WERCKER_STORE_LINK_TYPE}" = "restore" ]; then
-  /bin/sh ./store-link -r ${PREFIX}
-fi
+/bin/sh ${WERCKER_STEP_ROOT}/store-link ${MODE} ${PREFIX}
