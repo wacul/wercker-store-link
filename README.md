@@ -1,8 +1,8 @@
-# wercker-store-link
+# store-link
 
-This is a Wercker step to store and restore all symbolic links in the specified directory. It's useful for users of NPM commands in `node_modules/.bin` across multiple Wercker's pipelines.
+This is a Wercker step to store and restore all symbolic links in the specified directory. It's useful for users of NPM commands in `node_modules/.bin` across multiple pipelines.
 
-## wercker.yaml example
+## wercker.yml example
 
 ```yaml
 box: node:6.5
