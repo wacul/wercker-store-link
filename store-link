@@ -14,25 +14,21 @@ else
 fi
 
 PREFIX=.
+TARGET_DIR=${CWD}
 if [ -n "$2" ]; then
   PREFIX=$2
+  TARGET_DIR=${CWD}/${PREFIX}
 fi
-STORE_FILENAME=.store-link_${PREFIX}
-
-NODE_DIR=${PREFIX}/node_modules
-
-if [ ! -d "${NODE_DIR}" ]; then
-  exit 0
-fi
+STORE_FILENAME=${TARGET_DIR}/.store-link
 
 store() {
-  ABS_BIN_DIR=$(npm bin --prefix=${PREFIX})
-  BIN_DIR=${ABS_BIN_DIR#${CWD}/}
-  COMMANDS=$(npm bin --prefix=${PREFIX} | xargs ls)
-
-  echo ${BIN_DIR} > ${STORE_FILENAME}
-  for link in $COMMANDS; do
-    echo "${link} $(readlink ${ABS_BIN_DIR}/${link})" >> ${STORE_FILENAME}
+  COMMANDS=$(ls ${TARGET_DIR})
+  echo ${TARGET_DIR} > ${STORE_FILENAME}
+  for file in $COMMANDS; do
+    link=$(readlink ${TARGET_DIR}/${file})
+    if [ -n "${link}" ]; then
+      echo "${file} ${link}" >> ${STORE_FILENAME}
+    fi
   done
 }
 
@@ -41,19 +37,15 @@ restore() {
     echo ${STORE_FILENAME} is not found.
     exit 1
   fi
-
-  BIN_DIR=$(cat ${STORE_FILENAME} | head -n 1)
-  rm -rf ${BIN_DIR}
-  mkdir -p ${BIN_DIR}
-
+  TARGET_DIR=$(cat ${STORE_FILENAME} | head -n 1)
   IFS=' '
   while read line; do
-    if [ ! "${BIN_DIR}" = "${line}" ]; then
+    if [ ! "${TARGET_DIR}" = "${line}" ]; then
       set -- $line
-      target=$1
+      target=${TARGET_DIR}/$1
       src=$2
-      #echo $target $src
-      ln -s ${src#${BIN_DIR}/} ${BIN_DIR}/$target
+      rm -f ${target}
+      ln -s ${src#${TARGET_DIR}/} ${target}
     fi
   done < ${STORE_FILENAME}
 }

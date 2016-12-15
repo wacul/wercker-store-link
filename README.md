@@ -2,8 +2,6 @@
 
 Stores and restores sym-links. It's useful for users of NPM commands in `node_modules/.bin` across multiple Wercker's workflows.
 
-See also https://github.com/wercker/support/issues/46 .
-
 ## Install 
 Copy the `store-link` file from this repository to your repository.
 
